@@ -8,8 +8,8 @@ export class RegionConfigService {
       zohoClientId: process.env.ZOHO_CLIENT_ID || '',
       zohoClientSecret: process.env.ZOHO_CLIENT_SECRET || '',
       zohoRefreshToken: process.env.ZOHO_REFRESH_TOKEN || '',
-      zohoDomain: 'zoho.com',
-      zohoURLs: 'com',
+      zohoDomain: 'zoho.eu',
+      zohoURLs: 'eu',
       googleFolderId: process.env.GOOGLE_FOLDER_ID_SPAIN || '',
     },
     uk: {
