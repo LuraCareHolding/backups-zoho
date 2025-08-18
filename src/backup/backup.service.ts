@@ -80,6 +80,7 @@ export class BackupService {
             if (!allBackupLinks.length) {
                 throw new Error('No se encontraron URLs de backup para descargar.');
             }
+            console.log('URLs obtenidas de Zoho:', JSON.stringify(allBackupLinks, null, 2));
 
             const currentDate = new Date();
             const formattedDate = `${String(currentDate.getDate()).padStart(2, '0')}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${currentDate.getFullYear()}`;
@@ -100,9 +101,10 @@ export class BackupService {
 
             console.log(`[BackupService][downloadAndUploadBackup] Creando subcarpeta en Google Drive para ${formattedDate}`);
             const folderMetadata = { name: formattedDate, mimeType: 'application/vnd.google-apps.folder', parents: [config.googleFolderId] };
-            const folder = await drive.files.create({ requestBody: folderMetadata, fields: 'id' });
+            const folder = await drive.files.create({ requestBody: folderMetadata, fields: 'id', supportsAllDrives: true });
             const driveSubfolderId = folder.data.id!;
             console.log(`[BackupService][downloadAndUploadBackup] Subcarpeta creada en Google Drive, ID: ${driveSubfolderId}`);
+            console.log('Subcarpeta Drive ID:', driveSubfolderId);
 
             let filesProcessed = 0;
             let filesWithErrors = 0;
@@ -144,7 +146,7 @@ export class BackupService {
 
                 const fileMetadata = { name: fileName, parents: [driveSubfolderId] };
                 const media = { mimeType: 'application/zip', body: fs.createReadStream(finalFilePath) };
-                await drive.files.create({ requestBody: fileMetadata, media, fields: 'id' });
+                await drive.files.create({ requestBody: fileMetadata, media, fields: 'id',supportsAllDrives: true });
                 console.log(`[BackupService][downloadAndUploadBackup] Archivo subido a Google Drive: ${fileName}`);
                 fs.unlinkSync(finalFilePath);
                 console.log(`[BackupService][downloadAndUploadBackup] Archivo temporal eliminado: ${finalFilePath}`);
